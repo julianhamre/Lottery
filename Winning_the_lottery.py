@@ -67,7 +67,7 @@ def average_attempt():
 start = dt()
 
 print("won in attempt number", play_lottery_until_won())
-#attempts_append_txt()
+#attempts_append_to_txt()
 #print(average_attempt())
 
 end = dt()
