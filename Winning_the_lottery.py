@@ -14,35 +14,26 @@ def one_equal_number(number, numbers):
         if i == number:
             return True
     return False
-    
-
-def all_equal_numbers(numbers1, numbers2):
-    for i in numbers1:
-        if not one_equal_number(i, numbers2):
-            return False
-    return True
-
 
 def random_lottery_numbers():
     numbers = []
     while len(numbers) < 7:
-            number = randint(1, 35)
-            if not one_equal_number(number, numbers):
-                numbers.append(number)  
+        number = randint(1, 35)
+        if not one_equal_number(number, numbers):
+            numbers.append(number)  
+    numbers.sort()
     return numbers
-
 
 def play_lottery_until_won():
     win = random_lottery_numbers()
     play = random_lottery_numbers()
     counter = 1
-    while not all_equal_numbers(win, play):
+    while not win == play:
         play = random_lottery_numbers()
         counter += 1
         if counter % 100000 == 0:
             print(f"{counter / 1000000} million attempts")
     return counter
-
 
 def attempts_append_to_txt():
     counter = 1
@@ -52,7 +43,6 @@ def attempts_append_to_txt():
         print(counter, "elements added to lottery_winning_attempts")
         f.close()
         counter += 1
-
 
 def average_attempt():
     average = 0
