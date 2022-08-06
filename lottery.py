@@ -8,6 +8,8 @@ Created on Fri Apr 15 10:48:08 2022
 
 from timeit import default_timer as dt
 from random import randint
+import sys
+import getopt
 
 def one_equal_number(number, numbers):
     for i in numbers:
@@ -52,16 +54,19 @@ def average_attempt():
             average += int(line)
         average /= len(lines)
     return average
-        
 
-start = dt()
 
-print("won in attempt number", play_lottery_until_won())
-#attempts_append_to_txt()
-#print(average_attempt())
+def commands():
+    passed_arguments = sys.argv[1:]
+    opts, args = getopt.getopt(passed_arguments, "np")
+    
+    for opt, arg in opts:
+        if opt in ["-n"]:
+            print(random_lottery_numbers())
+        if opt in ["-p"]:
+            attempt = play_lottery_until_won()
+            print("won in attempt number", attempt)
 
-end = dt()
 
-print(f"run in {round(end - start, 4)} seconds")
-
+commands()
 
