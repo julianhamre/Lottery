@@ -20,7 +20,7 @@ def one_equal_number(number, numbers):
 def random_lottery_numbers():
     numbers = []
     while len(numbers) < 7:
-        number = randint(1, 35)  # fix range issue
+        number = randint(1, 34)
         if not one_equal_number(number, numbers):
             numbers.append(number)  
     numbers.sort()
