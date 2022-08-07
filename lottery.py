@@ -20,7 +20,7 @@ def one_equal_number(number, numbers):
 def random_lottery_numbers():
     numbers = []
     while len(numbers) < 7:
-        number = randint(1, 35)
+        number = randint(1, 35)  # fix range issue
         if not one_equal_number(number, numbers):
             numbers.append(number)  
     numbers.sort()
@@ -56,17 +56,24 @@ def average_attempt():
     return average
 
 
-def commands():
-    passed_arguments = sys.argv[1:]
-    opts, args = getopt.getopt(passed_arguments, "np")
+class commands:
+    __passed_arguments = sys.argv[1:]
     
-    for opt, arg in opts:
-        if opt in ["-n"]:
-            print(random_lottery_numbers())
-        if opt in ["-p"]:
-            attempt = play_lottery_until_won()
-            print("won in attempt number", attempt)
+    def execute_single_options(self):
+        flags = "np"
+        full_opts = "numbers", "play", "number_sets="
+        opts, args = getopt.getopt(self.__passed_arguments, flags, full_opts)
+    
+        for opt, arg in opts:
+            if opt in ["-n"] or opt in ["--numbers"]:
+                print(random_lottery_numbers())
+            if opt in ["--number_sets"]:
+                for i in range(int(arg)):
+                    print(f"list {i+1}:", random_lottery_numbers())
+            if opt in ["-p"] or opt in ["--play"]:
+                attempt = play_lottery_until_won()
+                print("won in attempt number", attempt)
+                
 
-
-commands()
-
+cm = commands()
+cm.execute_single_options()
