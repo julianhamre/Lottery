@@ -1,0 +1,8 @@
+python3 lottery.py -n
+python3 lottery.py --numbers
+python3 lottery.py -N 3
+python3 lottery.py --number_sets 3
+python3 lottery.py -A test_attempts.txt
+python3 lottery.py --average_attempt test_attempts.txt
+
+python3 lottery.py play --append_winning_attempt test_attempts.txt --times 1
