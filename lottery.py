@@ -34,7 +34,7 @@ def play_lottery_until_won():
         play = random_lottery_numbers()
         counter += 1
         if counter % 100000 == 0:
-            print(f"{counter / 1000000} million attempts")
+            print(f"{counter / 1000000} million attempts", end="\r")
     return counter
 
 def attempts_append_to_txt():
