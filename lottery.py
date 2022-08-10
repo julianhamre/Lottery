@@ -11,17 +11,11 @@ from random import randint
 import sys
 import getopt
 
-def one_equal_number(number, numbers):
-    for i in numbers:
-        if i == number:
-            return True
-    return False
-
 def random_lottery_numbers():
     numbers = []
     while len(numbers) < 7:
         number = randint(1, 34)
-        if not one_equal_number(number, numbers):
+        if not number in numbers:
             numbers.append(number)  
     numbers.sort()
     return numbers
