@@ -11,6 +11,7 @@ from random import randint
 import sys
 import getopt
 
+
 def random_lottery_numbers():
     numbers = []
     while len(numbers) < 7:
@@ -46,13 +47,15 @@ def average_attempt(file_name):
     return average
 
 
-class commands:
-    __passed_arguments = sys.argv[1:]
+class single_options:
     
-    def __single_options(self):
+    def __init__(self, arguments):
+        self.__arguments = arguments
+    
+    def execute(self):
         flags = "nN:A:"
         full_opts = "numbers", "number_sets=", "average_attempt="
-        opts, args = getopt.getopt(self.__passed_arguments, flags, full_opts)
+        opts, args = getopt.getopt(self.__arguments, flags, full_opts)
     
         for opt, arg in opts:
             if opt in ["-n"] or opt in ["--numbers"]:
@@ -63,41 +66,43 @@ class commands:
             if opt in ["-A"] or opt in ["--average_attempt"]:
                 print("average:", round(average_attempt(arg), 2))
                 
-      
-    def __play_options(self):
-        arguments = self.__passed_arguments[1:]
+
+class play_options:
+
+    def __init__(self, arguments):
+        arguments = arguments[1:]
         flags = "a:t:"
-        full_opts = "append_winning_attempt=", "times="
-        opts, args = getopt.getopt(arguments, flags, full_opts)
-        times = 1
+        full_string_opts = "append_winning_attempt=", "times="
+        opts, args = getopt.getopt(arguments, flags, full_string_opts)
+        
+        self.__times = 1
+        self.__append = False
         
         for opt, arg in opts:
             if opt in ["-t"] or opt in ["--times"]:
-                times = int(arg)
-        
-        append = False
-        
-        for opt, arg in opts:
+                self.__times = int(arg)
             if opt in ["-a"] or opt in ["--append_winning_attempt"]:
-                append = True
-                file_name = arg
+                self.__append = True
+                self.__file_name = arg
         
-        for i in range(times):
+
+    def execute(self):    
+        for i in range(self.__times):
             winning_attempt = play_lottery_until_won()
-            loop_count = f"{i+1}/{times},"
-            if append:
-                attempt_append_to_txt(winning_attempt, file_name)
+            loop_count = f"{i+1}/{self.__times},"
+            if self.__append:
+                attempt_append_to_txt(winning_attempt, self.__file_name)
                 print(loop_count, "appended winning attempt", winning_attempt)
             else:
                 print(loop_count, "won in attempt", winning_attempt)
         
         
-    def execute(self):
-        if self.__passed_arguments[0] == "play":
-            self.__play_options()
-        else:
-            self.__single_options()
-    
+def execute_commands():
+    arguments = sys.argv[1:]
+    if arguments[0] == "play":
+        play_options(arguments).execute()
+    else:
+        single_options(arguments).execute()
 
-cm = commands()
-cm.execute()
+
+execute_commands()
