@@ -47,6 +47,49 @@ def average_attempt(file_name):
     return average
 
 
+class bcolors:
+    red = "\u001b[31m"
+    green = "\u001b[32m"
+
+
+class equal_numbers:
+
+    def __init__(self, number_set, number_sets_file_name):
+        self.__input_set = number_set
+        self.__number_sets_file = number_sets_file_name
+        self.__search = False
+    
+    def __set_search_bool(self, string):
+        if "[" in string:
+            self.__search = True
+        if "]" in string:
+            self.__search = False
+    
+    def __strip_string_number(self, str_numb):
+        if "[" in str_numb:
+            str_numb = str_numb.replace("[", "")
+        if "," in str_numb:
+            str_numb = str_numb.replace(",", "")
+        if "]" in str_numb:
+            str_numb = str_numb.replace("]", "")
+        return str_numb
+        
+    def detect(self):
+        with open(self.__number_sets_file) as f:
+            all_equals = []
+            for line in f.readlines():
+                line_equals = []
+                for str_numb in line.split():
+                    self.__set_search_bool(str_numb)
+                    if self.__search:
+                        for numb in self.__input_set:
+                            file_numb = int(self.__strip_string_number(str_numb))
+                            if numb == file_numb:
+                                line_equals.append(numb)
+                all_equals.append(line_equals)
+        return all_equals
+
+
 class single_options:
     
     def __init__(self, arguments):
@@ -104,5 +147,5 @@ def execute_commands():
     else:
         single_options(arguments).execute()
 
-
-execute_commands()
+if len(sys.argv) > 1:
+    execute_commands()
