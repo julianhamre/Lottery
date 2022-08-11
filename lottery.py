@@ -124,10 +124,10 @@ class equal_numbers:
         return indexes
     
     def __lines_with_most_greens(self, lines, greens):
-        lines_with_greens = []
+        lines_most_greens = []
         for index in self.__line_indexes_with_most_greens(greens):
-            lines_with_greens.append(lines[index])
-        return lines_with_greens
+            lines_most_greens.append(lines[index])
+        return lines_most_greens
 
     def __amount_of_number_sets(self, lines):
         length = len(lines)
