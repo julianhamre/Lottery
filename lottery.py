@@ -129,7 +129,14 @@ class equal_numbers:
             lines_with_greens.append(lines[index])
         return lines_with_greens
 
-    def show_information(self):
+    def __amount_of_number_sets(self, lines):
+        length = len(lines)
+        if length > 1:
+            return f"{length} sets"
+        else:
+            return f"{length} set"
+
+    def show_information(self ):
         color = string_colors()
         
         introduction = f"checking for {color.set_green('numbers in')} and {color.set_red('numbers not in')} {self.__input_set}:"
@@ -137,9 +144,10 @@ class equal_numbers:
         lines, greens = self.paint()
         self.__show_lines(lines)
         
-        summary = f"\n\nsets with the most {color.set_green('numbers in')}, {max(greens)} greens:\n"
+        lines_most_greens = self.__lines_with_most_greens(lines, greens)
+        summary = f"\n\n{self.__amount_of_number_sets(lines_most_greens)} with the most {color.set_green('numbers in')}, {max(greens)} greens:\n"
         print(summary)
-        self.__show_lines(self.__lines_with_most_greens(lines, greens))
+        self.__show_lines(lines_most_greens)
         
 
         
