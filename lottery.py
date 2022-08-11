@@ -48,8 +48,36 @@ def average_attempt(file_name):
 
 
 class bcolors:
-    red = "\u001b[31m"
-    green = "\u001b[32m"
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
+
+class separated_numbers:
+    
+    def __init__(self):
+        self.__main = ""
+        self.__line_count = 1
+        
+    def new_line(self):
+        self.end()
+        self.__main += f"set {self.__line_count}: ["
+        self.__line_count += 1
+        
+    def add_green_numb(self, numb):
+        self.__main += f"{bcolors.OKGREEN}{numb}{bcolors.ENDC}, "
+
+    def add_red_numb(self, numb):
+        self.__main += f"{bcolors.FAIL}{numb}{bcolors.ENDC}, "
+        
+    def end(self):
+        self.__main += "]\n"
+
+    def show(self):
+        print(self.__main)
 
 
 class equal_numbers:
@@ -59,9 +87,11 @@ class equal_numbers:
         self.__number_sets_file = number_sets_file_name
         self.__search = False
     
-    def __set_search_bool(self, string):
+    def __check_and_enable_search(self, string):
         if "[" in string:
             self.__search = True
+    
+    def __check_and_disable_search(self, string):
         if "]" in string:
             self.__search = False
     
@@ -74,20 +104,22 @@ class equal_numbers:
             str_numb = str_numb.replace("]", "")
         return str_numb
         
-    def detect(self):
+    def separate(self):
+        separated = separated_numbers()
         with open(self.__number_sets_file) as f:
-            all_equals = []
             for line in f.readlines():
-                line_equals = []
+                separated.new_line()
                 for str_numb in line.split():
-                    self.__set_search_bool(str_numb)
+                    self.__check_and_enable_search(str_numb)
                     if self.__search:
-                        for numb in self.__input_set:
-                            file_numb = int(self.__strip_string_number(str_numb))
-                            if numb == file_numb:
-                                line_equals.append(numb)
-                all_equals.append(line_equals)
-        return all_equals
+                        int_str_numb = int(self.__strip_string_number(str_numb))
+                        if int_str_numb in self.__input_set:
+                            separated.add_green_numb(int_str_numb)
+                        else:
+                            separated.add_red_numb(int_str_numb)
+                    self.__check_and_disable_search(str_numb)
+            separated.end()
+        return separated
 
 
 class single_options:
