@@ -47,37 +47,19 @@ def average_attempt(file_name):
     return average
 
 
-class bcolors:
+class string_colors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKGREEN = '\033[92m'
     WARNING = '\033[93m'
     FAIL = '\033[91m'
     ENDC = '\033[0m'
-
-
-class colored_numbers:
     
-    def __init__(self):
-        self.__main = ""
-        self.__line_count = 1
-        
-    def new_line(self):
-        self.end()
-        self.__main += f"set {self.__line_count}: ["
-        self.__line_count += 1
-        
-    def add_green_numb(self, numb):
-        self.__main += f"{bcolors.OKGREEN}{numb}{bcolors.ENDC}, "
-
-    def add_red_numb(self, numb):
-        self.__main += f"{bcolors.FAIL}{numb}{bcolors.ENDC}, "
-        
-    def end(self):
-        self.__main += "]\n"
-
-    def show(self):
-        print(self.__main)
+    def set_green(self, string):
+        return f"{self.OKGREEN}{string}{self.ENDC}"
+    
+    def set_red(self, string):
+        return f"{self.FAIL}{string}{self.ENDC}"
 
 
 class equal_numbers:
@@ -105,21 +87,24 @@ class equal_numbers:
         return str_numb
         
     def paint(self):
-        colored = colored_numbers()
         with open(self.__number_sets_file) as f:
+            painted_lines = []
             for line in f.readlines():
-                colored.new_line()
+                painted_line = ""
                 for str_numb in line.split():
                     self.__check_and_enable_search(str_numb)
                     if self.__search:
                         int_str_numb = int(self.__strip_string_number(str_numb))
+                        color = string_colors()
+                        s = f"{int_str_numb}"
                         if int_str_numb in self.__input_set:
-                            colored.add_green_numb(int_str_numb)
+                            str_numb = str_numb.replace(s, color.set_green(s))
                         else:
-                            colored.add_red_numb(int_str_numb)
+                            str_numb = str_numb.replace(s, color.set_red(s))
+                    painted_line += f" {str_numb}"
                     self.__check_and_disable_search(str_numb)
-            colored.end()
-        return colored
+                painted_lines.append(painted_line)
+        return painted_lines
 
 
 class single_options:
