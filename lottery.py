@@ -89,8 +89,10 @@ class equal_numbers:
     def paint(self):
         with open(self.__number_sets_file) as f:
             painted_lines = []
+            greens_per_line = []
             for line in f.readlines():
                 painted_line = ""
+                greens = 0
                 for str_numb in line.split():
                     self.__check_and_enable_search(str_numb)
                     if self.__search:
@@ -99,12 +101,15 @@ class equal_numbers:
                         s = f"{int_str_numb}"
                         if int_str_numb in self.__input_set:
                             str_numb = str_numb.replace(s, color.set_green(s))
+                            greens += 1
                         else:
                             str_numb = str_numb.replace(s, color.set_red(s))
-                    painted_line += f" {str_numb}"
+                    painted_line += f"{str_numb} "
                     self.__check_and_disable_search(str_numb)
                 painted_lines.append(painted_line)
-        return painted_lines
+                greens_per_line.append(greens)
+
+        return painted_lines, greens_per_line
 
 
 class single_options:

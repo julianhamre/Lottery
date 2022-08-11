@@ -13,10 +13,11 @@ class test(unittest.TestCase):
     
     def test_detect(self):
         equal = lottery.equal_numbers([4, 5, 6, 7, 16, 20, 22], "test_sets.txt")
-        actual = equal.paint()
-        for line in actual:
+        lines, greens = equal.paint()
+        bench_greens = [0, 2, 3]
+        for line in lines:
             print(line)
-        
+        self.assertEqual(greens, bench_greens)
 
 if __name__ == "__main__":
     unittest.main()
