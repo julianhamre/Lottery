@@ -109,9 +109,41 @@ class equal_numbers:
                 painted_lines.append(painted_line)
                 greens_per_line.append(greens)
 
-        return painted_lines, greens_per_line
+        return painted_lines, greens_per_line    
 
+    def __show_lines(self, lines):
+        for line in lines:
+            print(line)
 
+    def __line_indexes_with_most_greens(self, greens):
+        mx = max(greens)
+        indexes = []
+        for i in range(len(greens)):
+            if greens[i] == mx:
+                indexes.append(i)
+        return indexes
+    
+    def __lines_with_most_greens(self, lines, greens):
+        lines_with_greens = []
+        for index in self.__line_indexes_with_most_greens(greens):
+            lines_with_greens.append(lines[index])
+        return lines_with_greens
+
+    def show_information(self):
+        color = string_colors()
+        
+        introduction = f"checking for {color.set_green('numbers in')} and {color.set_red('numbers not in')} {self.__input_set}:"
+        print(f"{introduction}\n")
+        lines, greens = self.paint()
+        self.__show_lines(lines)
+        
+        summary = f"\n\nsets with the most {color.set_green('numbers in')}, {max(greens)} greens:\n"
+        print(summary)
+        self.__show_lines(self.__lines_with_most_greens(lines, greens))
+        
+
+        
+        
 class single_options:
     
     def __init__(self, arguments):

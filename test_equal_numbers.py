@@ -15,10 +15,9 @@ class test(unittest.TestCase):
         equal = lottery.equal_numbers([4, 5, 6, 7, 16, 20, 22], "test_sets.txt")
         lines, greens = equal.paint()
         bench_greens = [0, 2, 3]
-        for line in lines:
-            print(line)
         self.assertEqual(greens, bench_greens)
-
+        equal.show_information()
+        
 if __name__ == "__main__":
     unittest.main()
         
