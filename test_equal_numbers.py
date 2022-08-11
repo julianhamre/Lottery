@@ -14,7 +14,8 @@ class test(unittest.TestCase):
     def test_detect(self):
         equal = lottery.equal_numbers([4, 5, 6, 7, 16, 20, 22], "test_sets.txt")
         actual = equal.paint()
-        actual.show()
+        for line in actual:
+            print(line)
         
 
 if __name__ == "__main__":
