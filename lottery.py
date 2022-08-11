@@ -56,7 +56,7 @@ class bcolors:
     ENDC = '\033[0m'
 
 
-class separated_numbers:
+class colored_numbers:
     
     def __init__(self):
         self.__main = ""
@@ -104,22 +104,22 @@ class equal_numbers:
             str_numb = str_numb.replace("]", "")
         return str_numb
         
-    def separate(self):
-        separated = separated_numbers()
+    def paint(self):
+        colored = colored_numbers()
         with open(self.__number_sets_file) as f:
             for line in f.readlines():
-                separated.new_line()
+                colored.new_line()
                 for str_numb in line.split():
                     self.__check_and_enable_search(str_numb)
                     if self.__search:
                         int_str_numb = int(self.__strip_string_number(str_numb))
                         if int_str_numb in self.__input_set:
-                            separated.add_green_numb(int_str_numb)
+                            colored.add_green_numb(int_str_numb)
                         else:
-                            separated.add_red_numb(int_str_numb)
+                            colored.add_red_numb(int_str_numb)
                     self.__check_and_disable_search(str_numb)
-            separated.end()
-        return separated
+            colored.end()
+        return colored
 
 
 class single_options:
