@@ -64,8 +64,8 @@ class string_colors:
 
 class equal_numbers:
 
-    def __init__(self, number_set, number_sets_file_name):
-        self.__input_set = number_set
+    def __init__(self, winning_number_set, number_sets_file_name):
+        self.__input_set = winning_number_set
         self.__number_sets_file = number_sets_file_name
         self.__search = False
     
@@ -136,16 +136,19 @@ class equal_numbers:
         else:
             return f"{length} set"
 
-    def show_information(self ):
+    def show_information(self, show_main_part):
         color = string_colors()
         
         introduction = f"checking for {color.set_green('numbers in')} and {color.set_red('numbers not in')} {self.__input_set}:"
-        print(f"{introduction}\n")
+        print(f"{introduction}")
         lines, greens = self.paint()
-        self.__show_lines(lines)
+        
+        if show_main_part:
+            print("")
+            self.__show_lines(lines)
         
         lines_most_greens = self.__lines_with_most_greens(lines, greens)
-        summary = f"\n\n{self.__amount_of_number_sets(lines_most_greens)} with the most {color.set_green('numbers in')}, {max(greens)} greens:\n"
+        summary = f"\n{self.__amount_of_number_sets(lines_most_greens)} with the most {color.set_green('numbers in')}, {max(greens)} greens:\n"
         print(summary)
         self.__show_lines(lines_most_greens)
         
@@ -170,7 +173,7 @@ class single_options:
                     print(f"set {i+1}:", random_lottery_numbers())
             if opt in ["-A"] or opt in ["--average_attempt"]:
                 print("average:", round(average_attempt(arg), 2))
-                
+
 
 class play_options:
 
@@ -200,12 +203,43 @@ class play_options:
                 print(loop_count, "appended winning attempt", winning_attempt)
             else:
                 print(loop_count, "won in attempt", winning_attempt)
+
+
+class equal_options:
+    
+    def __init__(self, arguments):
+        arguments = arguments[1:]
+        flags = "h"
+        full_string_opts = "hide_main_sets"
+        opts, args = getopt.getopt(arguments, flags, full_string_opts)
         
+        self.__show_main = True
         
+        for opt, arg in opts:
+            if opt in ["-h"] or opt in ["--hide_main_sets"]:
+                self.__show_main = False
+    
+    def __winning_numbers(self):
+        str_numbs = input("insert winning number set (format 1 2 3...): ")
+        str_numbs = str_numbs.split()
+        list_numbs = []
+        for numb in str_numbs:
+            list_numbs.append(int(numb))
+        return list_numbs
+    
+    def execute(self):
+        numbs = self.__winning_numbers()
+        file = input("insert number set file: ")
+        equal = equal_numbers(numbs, file)
+        equal.show_information(self.__show_main)
+
+
 def execute_commands():
     arguments = sys.argv[1:]
     if arguments[0] == "play":
         play_options(arguments).execute()
+    elif arguments[0] == "equal":
+        equal_options(arguments).execute()
     else:
         single_options(arguments).execute()
 

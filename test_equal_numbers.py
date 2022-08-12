@@ -16,7 +16,7 @@ class test(unittest.TestCase):
         lines, greens = equal.paint()
         bench_greens = [0, 2, 3]
         self.assertEqual(greens, bench_greens)
-        equal.show_information()
+        equal.show_information(True)
         
 if __name__ == "__main__":
     unittest.main()
