@@ -209,12 +209,20 @@ class show_correct_numbers_options:
             if opt in ["-h"] or opt in ["--hide_main_sets"]:
                 self.__show_main = False
     
+    def __check_number_set_format(self, number_set):
+        if not len(number_set) == 7:
+            raise IndexError("drawn number set must contain 7 numbers")
+        for numb in number_set:
+            if numb < 1 or numb > 34:
+                raise ValueError("drawn numbers must be in range [1, 34]")
+    
     def __drawn_numbers(self):
         str_numbs = input("insert drawn number set (format 1 2 3...): ")
         sectioned_numbs = str_numbs.split()
         number_set = []
         for numb in sectioned_numbs:
             number_set.append(int(numb))
+        self.__check_number_set_format(number_set)
         return number_set
     
     def execute(self):
