@@ -6,7 +6,6 @@ Created on Fri Apr 15 10:48:08 2022
 @author: julianhamre
 """
 
-from timeit import default_timer as dt
 from random import randint
 import sys
 import getopt
@@ -32,14 +31,14 @@ def play_lottery_until_won():
             print(f"{counter / 1000000} million attempts", end="\r")
     return counter
 
-def attempt_append_to_txt(winning_attempt, file_name):
-    f = open(file_name, "a") 
+def attempt_append_to_txt(winning_attempt, file):
+    f = open(file, "a") 
     f.write(f"{winning_attempt}\n")
     f.close()
 
-def average_attempt(file_name):
+def average_attempt(file):
     average = 0
-    with open(file_name) as f:
+    with open(file) as f:
         lines = f.readlines()
         for line in lines:
             average += int(line)
@@ -89,10 +88,10 @@ class correct_numbers:
     def paint(self):
         with open(self.__guessed_sets) as f:
             painted_lines = []
-            greens_per_line = []
+            correct_per_line = []
             for line in f.readlines():
                 painted_line = ""
-                greens = 0
+                correct = 0
                 for segment in line.split():
                     self.__find_number_set_start(segment)
                     if self.__in_number_set: 
@@ -101,33 +100,27 @@ class correct_numbers:
                         str_numb = f"{numb}"
                         if numb in self.__drawn_set:
                             segment = segment.replace(str_numb, color.set_green(str_numb))
-                            greens += 1
+                            correct += 1
                         else:
                             segment = segment.replace(str_numb, color.set_red(str_numb))
                     painted_line += f"{segment} "
                     self.__find_number_set_end(segment)
                 painted_lines.append(painted_line)
-                greens_per_line.append(greens)
+                correct_per_line.append(correct)
 
-        return painted_lines, greens_per_line    
+        return painted_lines, correct_per_line    
 
     def __show_lines(self, lines):
         for line in lines:
             print(line)
 
-    def __line_indexes_with_most_greens(self, greens):
-        mx = max(greens)
-        indexes = []
-        for i in range(len(greens)):
-            if greens[i] == mx:
-                indexes.append(i)
-        return indexes
-    
-    def __lines_with_most_greens(self, lines, greens):
-        lines_most_greens = []
-        for index in self.__line_indexes_with_most_greens(greens):
-            lines_most_greens.append(lines[index])
-        return lines_most_greens
+    def __lines_with_most_correct(self, lines, correct):
+        mx = max(correct)
+        lines_most_correct = []
+        for i in range(len(correct)):
+            if correct[i] == mx:
+                lines_most_correct.append(lines[i])
+        return lines_most_correct
 
     def __singular_or_plural(self, value, singular, plural):
         if value > 1:
@@ -141,15 +134,15 @@ class correct_numbers:
         introduction = f"checking for {color.set_green('numbers in')} and {color.set_red('numbers not in')} {self.__drawn_set}:"
         print(f"{introduction}")
         
-        lines, greens = self.paint()
+        lines, correct = self.paint()
         if show_main_part:
             print("")
             self.__show_lines(lines)
         
-        lines_most_greens = self.__lines_with_most_greens(lines, greens)
-        summary = f"\n{self.__singular_or_plural(len(lines_most_greens), 'set', 'sets')} with the most {color.set_green('numbers in')} {self.__drawn_set}\n{max(greens)}/7 correct numbers:\n"
+        lines_most_correct = self.__lines_with_most_correct(lines, correct)
+        summary = f"\n{self.__singular_or_plural(len(lines_most_correct), 'set', 'sets')} with the most {color.set_green('numbers in')} {self.__drawn_set}\n{max(correct)}/7 correct numbers:\n"
         print(summary)
-        self.__show_lines(lines_most_greens)
+        self.__show_lines(lines_most_correct)
         
         
 class single_options:
@@ -188,7 +181,7 @@ class play_options:
                 self.__times = int(arg)
             if opt in ["-a"] or opt in ["--append_winning_attempt"]:
                 self.__append = True
-                self.__file_name = arg
+                self.__file = arg
         
 
     def execute(self):    
@@ -196,7 +189,7 @@ class play_options:
             winning_attempt = play_lottery_until_won()
             loop_count = f"{i+1}/{self.__times},"
             if self.__append:
-                attempt_append_to_txt(winning_attempt, self.__file_name)
+                attempt_append_to_txt(winning_attempt, self.__file)
                 print(loop_count, "appended winning attempt", winning_attempt)
             else:
                 print(loop_count, "won in attempt", winning_attempt)
