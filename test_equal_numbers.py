@@ -12,11 +12,11 @@ import lottery
 class test(unittest.TestCase):
     
     def test_detect(self):
-        equal = lottery.equal_numbers([4, 5, 6, 7, 16, 20, 22], "test_sets.txt")
-        lines, greens = equal.paint()
+        correct = lottery.correct_numbers([4, 5, 6, 7, 16, 20, 22], "test_sets.txt")
+        lines, greens = correct.paint()
         bench_greens = [0, 2, 3]
         self.assertEqual(greens, bench_greens)
-        equal.show_information(True)
+        correct.show_information(True)
         
 if __name__ == "__main__":
     unittest.main()

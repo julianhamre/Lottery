@@ -62,22 +62,22 @@ class string_colors:
         return f"{self.FAIL}{string}{self.ENDC}"
 
 
-class equal_numbers:
+class correct_numbers:
 
-    def __init__(self, winning_number_set, number_sets_file_name):
-        self.__input_set = winning_number_set
-        self.__number_sets_file = number_sets_file_name
-        self.__search = False
+    def __init__(self, drawn_number_set, guessed_number_sets_file):
+        self.__drawn_set = drawn_number_set
+        self.__guessed_sets = guessed_number_sets_file
+        self.__in_number_set = False
     
-    def __check_and_enable_search(self, string):
+    def __find_number_set_start(self, string):
         if "[" in string:
-            self.__search = True
+            self.__in_number_set = True
     
-    def __check_and_disable_search(self, string):
+    def __find_number_set_end(self, string):
         if "]" in string:
-            self.__search = False
+            self.__in_number_set = False
     
-    def __strip_string_number(self, str_numb):
+    def __strip_number_segment(self, str_numb):
         if "[" in str_numb:
             str_numb = str_numb.replace("[", "")
         if "," in str_numb:
@@ -87,25 +87,25 @@ class equal_numbers:
         return str_numb
         
     def paint(self):
-        with open(self.__number_sets_file) as f:
+        with open(self.__guessed_sets) as f:
             painted_lines = []
             greens_per_line = []
             for line in f.readlines():
                 painted_line = ""
                 greens = 0
-                for str_numb in line.split():
-                    self.__check_and_enable_search(str_numb)
-                    if self.__search:
-                        int_str_numb = int(self.__strip_string_number(str_numb))
+                for segment in line.split():
+                    self.__find_number_set_start(segment)
+                    if self.__in_number_set: 
+                        numb = int(self.__strip_number_segment(segment))
                         color = string_colors()
-                        s = f"{int_str_numb}"
-                        if int_str_numb in self.__input_set:
-                            str_numb = str_numb.replace(s, color.set_green(s))
+                        str_numb = f"{numb}"
+                        if numb in self.__drawn_set:
+                            segment = segment.replace(str_numb, color.set_green(str_numb))
                             greens += 1
                         else:
-                            str_numb = str_numb.replace(s, color.set_red(s))
-                    painted_line += f"{str_numb} "
-                    self.__check_and_disable_search(str_numb)
+                            segment = segment.replace(str_numb, color.set_red(str_numb))
+                    painted_line += f"{segment} "
+                    self.__find_number_set_end(segment)
                 painted_lines.append(painted_line)
                 greens_per_line.append(greens)
 
@@ -138,20 +138,18 @@ class equal_numbers:
     def show_information(self, show_main_part):
         color = string_colors()
         
-        introduction = f"checking for {color.set_green('numbers in')} and {color.set_red('numbers not in')} {self.__input_set}:"
+        introduction = f"checking for {color.set_green('numbers in')} and {color.set_red('numbers not in')} {self.__drawn_set}:"
         print(f"{introduction}")
-        lines, greens = self.paint()
         
+        lines, greens = self.paint()
         if show_main_part:
             print("")
             self.__show_lines(lines)
         
         lines_most_greens = self.__lines_with_most_greens(lines, greens)
-        summary = f"\n{self.__singular_or_plural(len(lines_most_greens), 'set', 'sets')} with the most {color.set_green('numbers in')}, {self.__singular_or_plural(max(greens), 'green', 'greens')}:\n"
+        summary = f"\n{self.__singular_or_plural(len(lines_most_greens), 'set', 'sets')} with the most {color.set_green('numbers in')} {self.__drawn_set}\n{max(greens)}/7 correct numbers:\n"
         print(summary)
         self.__show_lines(lines_most_greens)
-        
-
         
         
 class single_options:
@@ -204,7 +202,7 @@ class play_options:
                 print(loop_count, "won in attempt", winning_attempt)
 
 
-class equal_options:
+class show_correct_numbers_options:
     
     def __init__(self, arguments):
         arguments = arguments[1:]
@@ -218,27 +216,27 @@ class equal_options:
             if opt in ["-h"] or opt in ["--hide_main_sets"]:
                 self.__show_main = False
     
-    def __winning_numbers(self):
-        str_numbs = input("insert winning number set (format 1 2 3...): ")
-        str_numbs = str_numbs.split()
-        list_numbs = []
-        for numb in str_numbs:
-            list_numbs.append(int(numb))
-        return list_numbs
+    def __drawn_numbers(self):
+        str_numbs = input("insert drawn number set (format 1 2 3...): ")
+        sectioned_numbs = str_numbs.split()
+        number_set = []
+        for numb in sectioned_numbs:
+            number_set.append(int(numb))
+        return number_set
     
     def execute(self):
-        numbs = self.__winning_numbers()
-        file = input("insert number set file: ")
-        equal = equal_numbers(numbs, file)
-        equal.show_information(self.__show_main)
+        numbs = self.__drawn_numbers()
+        file = input("insert guessed number sets file: ")
+        correct = correct_numbers(numbs, file)
+        correct.show_information(self.__show_main)
 
 
 def execute_commands():
     arguments = sys.argv[1:]
     if arguments[0] == "play":
         play_options(arguments).execute()
-    elif arguments[0] == "equal":
-        equal_options(arguments).execute()
+    elif arguments[0] == "show_correct_numbers":
+        show_correct_numbers_options(arguments).execute()
     else:
         single_options(arguments).execute()
 
